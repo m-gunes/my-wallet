@@ -10,19 +10,20 @@ const provider = ethers.getDefaultProvider('rinkeby');
 const wallets = privateKey.map(privateKey =>  new ethers.Wallet(privateKey, provider));
 
 
-export const updateBalance = (transactionWallets) => async(dispatch) => {
+export const updateBalance = (transactionWallets, transactionHash ) => async(dispatch) => {
 
-  
    try {
+      let transactionOk = await provider.waitForTransaction(transactionHash);
+      console.log('transactionOk: ', transactionOk);
+      if(transactionOk) {
+         transactionWallets.map(async(wallet) => {
+            let balance = await provider.getBalance(wallet.address);
+            console.log('ethers.utils.formatEther(balance): ', ethers.utils.formatEther(balance));
+            wallet.balance = ethers.utils.formatEther(balance)
+            dispatch({type: 'UPDATE_WALLETS', payload:{ wallet }  })
+         })
       
-      transactionWallets.map(async(wallet) => {
-         let balance = await provider.getBalance(wallet.address);
-         console.log('ethers.utils.formatEther(balance): ', ethers.utils.formatEther(balance));
-         wallet.balance = ethers.utils.formatEther(balance)
-         dispatch({type: 'UPDATE_WALLETS', payload:{ wallet }  })
-      })
-
-      
+      }
    } catch (error) {
       console.log('error: ', error);
    }

@@ -24,11 +24,11 @@ class SendEtherModal extends Component {
             };
             
             let sendPromise = this.props.selectedWallet.sendTransaction(transaction);
-            sendPromise.then((tx) => {
-                  this.props.updateBalance(transactionWallets);
+            sendPromise.then((transaction) => {
+                  this.props.updateBalance(transactionWallets, transaction.hash);
                   this.props.form.resetFields();
-                  message.success('successful', 2.5)
-                  console.log(tx);
+                  message.success('transaction sent successfully', 2.5)
+                  console.log('transactionHash',transaction);
                   this.props.handleCancel()
 
             });
@@ -101,8 +101,8 @@ class SendEtherModal extends Component {
                               option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                            }
                         >
-                           {filteredOptions.map(val => 
-                                 <Option key={val.address} value={val.address}>{val.address}</Option>
+                           {filteredOptions.map((val, i) => 
+                                 <Option key={i} value={val.address}>{val.address}</Option>
                            )}
                            
                         </Select>

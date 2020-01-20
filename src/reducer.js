@@ -18,18 +18,21 @@ export default function(state = initialState, action) {
 
       case 'UPDATE_WALLETS':
          let updatedWallet = action.payload.wallet;
-         state.wallets.map(w => {
-            if(w.address === updatedWallet.address){
-               w.balance = updatedWallet.balance
-            }
-         })
+         let itemIndex = state.wallets.findIndex(w => w.address === updatedWallet.address)
          
          return {
             ...state,
             loading: false,
-
+            wallets: state.wallets.map((item, index) => {
+               if (index !== itemIndex) {
+                  return item
+               }
+               return {
+                  ...item,
+                  ...action.item
+               }
+            })
          }
-     
       default:
          return state;
 
