@@ -1,6 +1,7 @@
 const initialState = {
    wallets: [],
-   loading: true
+   loading: true,
+   updateBalance: false
 }
 
 export default function(state = initialState, action) {
@@ -17,21 +18,23 @@ export default function(state = initialState, action) {
          }
 
       case 'UPDATE_WALLETS':
-         let updatedWallet = action.payload.wallet;
+         let updatedWallet = JSON.stringify(action.payload.wallet);
          let itemIndex = state.wallets.findIndex(w => w.address === updatedWallet.address)
+         let updated = state.wallets.map((item, index) => {
+            if (index !== itemIndex) {
+               return item
+            }
+            return {
+               ...item,
+               ...action.item
+            }
+         })
          
          return {
             ...state,
             loading: false,
-            wallets: state.wallets.map((item, index) => {
-               if (index !== itemIndex) {
-                  return item
-               }
-               return {
-                  ...item,
-                  ...action.item
-               }
-            })
+            updateBalance: true,
+            wallets: updated
          }
       default:
          return state;

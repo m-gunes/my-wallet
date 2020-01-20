@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { List, Button, Spin, Row, Col } from 'antd';
+import { List, Button, Spin, Row, Col, message } from 'antd';
 import SendEtherModal from './SendEtherModal';
 import { connect } from 'react-redux';
 import { getWallets } from '../action';
@@ -20,8 +20,10 @@ class WalletList extends Component {
 
    render(){
       const {visible, selectedWallet} = this.state;
-      const {wallets, loading} = this.props;
+      const {wallets, loading, updateBalance} = this.props;
       console.log('wallets_render: ', wallets);
+      updateBalance && message.success('Balance updated', 2.5)
+      
       return (
          <Spin spinning={loading}>
 
@@ -62,7 +64,8 @@ class WalletList extends Component {
 
 const mapStateToProps = state => ({
    wallets: state.wallets,
-   loading: state.loading
+   loading: state.loading,
+   updateBalance: state.updateBalance
 });
 
 const mapDispatchToProps = {
